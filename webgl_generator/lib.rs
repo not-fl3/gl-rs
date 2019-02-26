@@ -17,6 +17,7 @@
 //!
 //! See the `webgl` crate for an example of use.
 extern crate heck;
+#[cfg(feature = "html2runes")]
 extern crate html2runes;
 extern crate khronos_api;
 extern crate regex;

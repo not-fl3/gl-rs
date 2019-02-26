@@ -26,18 +26,25 @@ pub fn multimap_append<K: Ord + Clone, V: PartialEq>(
 /// Best-effort attempt to render HTML into a doc-comment which can
 /// be placed in the generated code.
 pub fn convert_html_to_doc_comment(html: &str) -> String {
-    use html2runes;
-    use regex::RegexBuilder;
+    #[cfg(feature = "html2runes")]
+    {
+        use html2runes;
+        use regex::RegexBuilder;
 
-    // Create doc comments
-    let doc_comment_regex = RegexBuilder::new("^").multi_line(true).build().unwrap();
+        // Create doc comments
+        let doc_comment_regex = RegexBuilder::new("^").multi_line(true).build().unwrap();
 
-    let md = html2runes::markdown::convert_string(html);
-    let mut doc = doc_comment_regex
-        .replace_all(md.trim_right(), "/// ")
-        .into();
-    doc += "\n";
-    doc
+        let md = html2runes::markdown::convert_string(html);
+        let mut doc = doc_comment_regex
+            .replace_all(md.trim_right(), "/// ")
+            .into();
+        doc += "\n";
+        doc
+    }
+    #[cfg(not(feature = "html2runes"))]
+    {
+        String::new()
+    }
 }
 
 /// Appends an underscore to a name if it conflicts with a reserved word.
